@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}AI Symptom Checker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-robot"></i> Smart Symptom Checker</h4>
+            </div>
+            <div class="card-body">
+                <p class="lead text-muted">Describe your symptoms, and our AI will recommend the right specialist.</p>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="symptoms" class="form-label">How are you feeling?</label>
+                        <textarea class="form-control" id="symptoms" name="symptoms" rows="4" 
+                                  placeholder="e.g., I have a severe headache and feeling dizzy..." required>{{ symptoms_input }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-primary w-100">
+                        <i class="fas fa-search-plus"></i> Analyze Symptoms
+                    </button>
+                </form>
+
+                {% if recommendation %}
+                <div class="alert alert-success mt-4 fade show" role="alert">
+                    <h4 class="alert-heading"><i class="fas fa-check-circle"></i> Recommendation Found!</h4>
+                    <p>Based on your symptoms, we suggest you visit the <strong>{{ recommendation.department }}</strong> department.</p>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Confidence: <strong>{{ recommendation.confidence }}</strong></span>
+                        <a href="{{ url_for('patient_doctors', department=recommendation.dept_id) }}" class="btn btn-success">
+                            <i class="fas fa-user-md"></i> Find {{ recommendation.department }} Doctors
+                        </a>
+                    </div>
+                </div>
+                {% elif request.method == 'POST' %}
+                <div class="alert alert-warning mt-4">
+                    <i class="fas fa-exclamation-triangle"></i> Sorry, we couldn't match your symptoms to a specific department. 
+                    Please try describing them differently or browse <a href="{{ url_for('patient_doctors') }}">All Doctors</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

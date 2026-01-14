@@ -5,44 +5,43 @@
 {% block content %}
 <h2 class="mb-4"><i class="fas fa-tachometer-alt"></i> Welcome, {{ current_user.username }}!</h2>
 
-<!-- Quick Stats -->
 <div class="row mb-4">
     <div class="col-md-4 mb-3">
-        <div class="card text-white bg-info shadow">
-            <div class="card-body text-center">
+        <div class="card text-white bg-info h-100 shadow-sm">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
                 <h6 class="card-title text-uppercase mb-0">Upcoming Appointments</h6>
-                <h2 class="mb-0">{{ upcoming_appointments }}</h2>
+                <h1 class="display-4 fw-bold my-2">{{ upcoming_appointments }}</h1>
             </div>
-            <div class="card-footer bg-info bg-opacity-75">
-                <a href="{{ url_for('patient_appointments') }}" class="text-white text-decoration-none">
+            <div class="card-footer bg-info bg-opacity-75 text-center">
+                <a href="{{ url_for('patient_appointments') }}" class="text-white text-decoration-none stretched-link">
                     <small>View All <i class="fas fa-arrow-right"></i></small>
                 </a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4 mb-3">
-        <div class="card text-white bg-success shadow">
-            <div class="card-body text-center">
+        <div class="card text-white bg-success h-100 shadow-sm" style="background: linear-gradient(45deg, #28a745, #34ce57);">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
                 <h6 class="card-title text-uppercase mb-0">Book Appointment</h6>
-                <i class="fas fa-calendar-plus fa-3x mt-2"></i>
+                <i class="fas fa-calendar-plus fa-3x mt-3 mb-2"></i>
             </div>
-            <div class="card-footer bg-success bg-opacity-75">
-                <a href="{{ url_for('patient_doctors') }}" class="text-white text-decoration-none">
+            <div class="card-footer bg-success bg-opacity-75 text-center">
+                <a href="{{ url_for('patient_doctors') }}" class="text-white text-decoration-none stretched-link">
                     <small>Find Doctors <i class="fas fa-arrow-right"></i></small>
                 </a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4 mb-3">
-        <div class="card text-white bg-warning shadow">
-            <div class="card-body text-center">
+        <div class="card text-white bg-warning h-100 shadow-sm" style="background: linear-gradient(45deg, #ffc107, #ffdb58);">
+            <div class="card-body text-center d-flex flex-column justify-content-center">
                 <h6 class="card-title text-uppercase mb-0">Update Profile</h6>
-                <i class="fas fa-user-edit fa-3x mt-2"></i>
+                <i class="fas fa-user-edit fa-3x mt-3 mb-2"></i>
             </div>
-            <div class="card-footer bg-warning bg-opacity-75">
-                <a href="{{ url_for('patient_profile') }}" class="text-white text-decoration-none">
+            <div class="card-footer bg-warning bg-opacity-75 text-center">
+                <a href="{{ url_for('patient_profile') }}" class="text-white text-decoration-none stretched-link">
                     <small>Edit Profile <i class="fas fa-arrow-right"></i></small>
                 </a>
             </div>
@@ -50,8 +49,7 @@
     </div>
 </div>
 
-<!-- Patient Profile Summary -->
-<div class="card shadow">
+<div class="card shadow mb-5">
     <div class="card-header bg-primary text-white">
         <h5 class="mb-0"><i class="fas fa-user"></i> My Profile</h5>
     </div>
@@ -75,28 +73,47 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="row mt-4">
-    <div class="col-md-6 mb-3">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                <h5 class="card-title">Find Doctors</h5>
-                <p class="card-text">Browse our expert doctors and book appointments.</p>
-                <a href="{{ url_for('patient_doctors') }}" class="btn btn-primary">View Doctors</a>
-            </div>
-        </div>
-    </div>
+<h4 class="mb-3 text-muted">Quick Actions</h4>
+<div class="row">
     
-    <div class="col-md-6 mb-3">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
-                <h5 class="card-title">My Appointments</h5>
-                <p class="card-text">View and manage your upcoming appointments.</p>
-                <a href="{{ url_for('patient_appointments') }}" class="btn btn-success">View Appointments</a>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center py-4">
+                <div class="mb-3 text-primary">
+                    <i class="fas fa-user-md fa-3x"></i>
+                </div>
+                <h5 class="card-title">Find Doctors</h5>
+                <p class="card-text text-muted small">Browse our expert doctors and book appointments.</p>
+                <a href="{{ url_for('patient_doctors') }}" class="btn btn-primary w-100 mt-3">View Doctors</a>
             </div>
         </div>
     </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center py-4">
+                <div class="mb-3 text-info">
+                    <i class="fas fa-robot fa-3x"></i>
+                </div>
+                <h5 class="card-title">Symptom Checker</h5>
+                <p class="card-text text-muted small">Not sure which doctor to visit? Let our AI guide you.</p>
+                <a href="{{ url_for('symptom_checker') }}" class="btn btn-info text-white w-100 mt-3">Try AI Checker</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center py-4">
+                <div class="mb-3 text-success">
+                    <i class="fas fa-calendar-check fa-3x"></i>
+                </div>
+                <h5 class="card-title">My Appointments</h5>
+                <p class="card-text text-muted small">View history, download prescriptions, or cancel bookings.</p>
+                <a href="{{ url_for('patient_appointments') }}" class="btn btn-success w-100 mt-3">View Appointments</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
