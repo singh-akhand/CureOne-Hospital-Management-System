@@ -25,16 +25,84 @@ body {
     font-size: 1.5rem;
 }
 
+
+.custom-header-gradient {
+        /* Sky to Indigo Gradient */
+        background: linear-gradient(135deg, #0ea5e9 0%, #4338ca 50%) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Keeps navigation links bright white and clear */
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        transition: color 0.3s ease;
+    }
+
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #ffffff !important;
+    }
 /* Hero Section */
-.hero-section {
+/* .hero-section {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 3rem 2rem;
+    height: 360px !important;
 }
 
 .hero-section h1 {
     font-weight: bold;
-}
+} */
+
+
+
+
+.hero-container {
+        background: radial-gradient(circle at top right, #f8fbff 0%, #ffffff 100%);
+        border-radius: 0 0 60px 60px;
+    }
+    
+    .bg-soft-primary {
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+
+    .shadow-primary {
+        box-shadow: 0 10px 30px -10px rgba(13, 110, 253, 0.5) !important;
+    }
+
+    /* Glass Card: Starts Straight, Tilts on Hover */
+    .hero-glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border: 2px solid #ffffff;
+        border-radius: 40px;
+        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.08);
+        transform: rotate(0deg); /* Starts perfectly straight */
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth bouncy transition */
+    }
+
+    .hero-glass-card:hover {
+        transform: rotate(-4deg) translateY(-10px) scale(1.05); /* Tilts and lifts on hover */
+        border-color: rgba(13, 110, 253, 0.3);
+    }
+
+    /* Icon Decoration */
+    .icon-circle {
+        width: 110px;
+        height: 110px;
+        background: linear-gradient(45deg, #2563eb, #3b82f6);
+        border-radius: 35% 65% 65% 35% / 30% 30% 70% 70%; /* Unique organic shape */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        animation: shapeMorph 6s infinite alternate;
+    }
+
+    @keyframes shapeMorph {
+        0% { border-radius: 35% 65% 65% 35% / 30% 30% 70% 70%; }
+        100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    }
+
 
 /* Card Styles */
 .card {
