@@ -14,110 +14,55 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     
-    {% block extra_css %}{% endblock %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    {% block extra_css %}<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
+        .hero-gradient { background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%); }
+        html { scroll-behavior: smooth; }
+        .pill { border-radius: 999px; }
+
+        /* Header sizing helpers (increased) */
+        /* Use min-height + padding so the visual size adjusts reliably across browsers and avoids being overridden by utility classes */
+        nav.site-nav { min-height: 200px !important; padding-top: 2rem; padding-bottom: 2rem; display: flex; align-items: center; }
+        @media (max-width: 767px) {
+            /* Slightly smaller on phones to keep touch targets reasonable */
+            nav.site-nav { min-height: 130px !important; padding-top: 1rem; padding-bottom: 1rem; }
+        }
+        /* Prevent content jump when using anchor links */
+        .site-main { padding-top: 2rem; }
+    </style>{% endblock %}
+
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-hospital"></i> Hospital MS
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if current_user.is_authenticated %}
-                        <!-- Admin Navigation -->
-                        {% if current_user.has_role('admin') %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_doctors') }}">
-                                    <i class="fas fa-user-md"></i> Doctors
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_patients') }}">
-                                    <i class="fas fa-users"></i> Patients
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_appointments') }}">
-                                    <i class="fas fa-calendar-check"></i> Appointments
-                                </a>
-                            </li>
-                        {% endif %}
-                        
-                        <!-- Doctor Navigation -->
-                        {% if current_user.has_role('doctor') %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('doctor_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('doctor_appointments') }}">
-                                    <i class="fas fa-calendar-check"></i> Appointments
-                                </a>
-                            </li>
-                        {% endif %}
-                        
-                        <!-- Patient Navigation -->
-                        {% if current_user.has_role('patient') %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('patient_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('patient_doctors') }}">
-                                    <i class="fas fa-user-md"></i> Doctors
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('patient_appointments') }}">
-                                    <i class="fas fa-calendar-check"></i> My Appointments
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('patient_profile') }}">
-                                    <i class="fas fa-user"></i> Profile
-                                </a>
-                            </li>
-                        {% endif %}
-                        
-                        <!-- User Menu -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ current_user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ url_for('security.logout') }}">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('security.login') }}">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('security.register') }}">
-                                <i class="fas fa-user-plus"></i> Register
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+
+                <nav class="site-nav flex justify-between items-center px-4 bg-[#f8fafc]/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="flex items-center">
+            <div class="w-6 h-6 bg-cyan-700 rounded-md mr-3 flex items-center justify-center text-white font-bold">C</div>
+            <div class="flex flex-col">
+                <div class="text-lg font-bold text-slate-800 tracking-tight">Cure One Hospital</div>
+                <div id="live-clock" class="text-[11px] text-slate-500"></div>
             </div>
         </div>
+        <div class="hidden md:flex space-x-8 font-medium text-sm text-slate-600">
+            <a href="#departments" class="hover:text-cyan-700 transition">Departments</a>
+            <a href="#doctors" class="hover:text-cyan-700 transition">Find a Doctor</a>
+            <a href="#portal" class="hover:text-cyan-700 transition">Patient Portal</a>
+        </div>
+        <div class="hidden md:flex items-center">
+            <a href="tel:910192200" class="text-slate-600 font-semibold mr-4 flex items-center">
+                <i class="fas fa-phone-alt text-cyan-700 mr-2"></i>(91) 019-2200
+            </a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:bg-slate-700">Dashboard</a>
+            {% else %}
+                <a href="{{ url_for('security.login') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:bg-slate-700">Login</a>
+            {% endif %}
+        </div>
     </nav>
+
+
 
     <!-- Flash Messages -->
     <div class="container mt-3">
@@ -134,7 +79,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container my-4">
+    <main class="container my-4 site-main">
         {% block content %}{% endblock %}
     </main>
 
@@ -149,6 +94,19 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    <script>
+    (function() {
+        function updateClock() {
+            var el = document.getElementById('live-clock');
+            if (!el) return;
+            var now = new Date();
+            el.textContent = now.toLocaleString();
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    })();
+    </script>
+    {% endblock %}
 </body>
 </html>
