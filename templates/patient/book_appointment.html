@@ -59,10 +59,43 @@
                         </select>
                     </div>
                     
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label class="form-label">Reason for Visit *</label>
                         <textarea name="reason" class="form-control" rows="4" required placeholder="Describe your symptoms or reason for consultation..."></textarea>
-                    </div>
+                    </div> -->
+
+                    <div class="mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-1">
+    <label class="form-label mb-0">Reason for Visit *</label>
+    <button
+      id="voice-btn-reason"
+      type="button"
+      aria-label="Start voice input for reason"
+      class="btn btn-dark btn-sm circle d-inline-flex align-items-center justify-content-center"
+      style="width: 35px; height: 35px; border-radius: 50%;"
+    >
+      <i class="fas fa-microphone" id="mic-icon"></i>
+    </button>
+  </div>
+
+  <div id="viz-container" class="d-none mb-2 p-2 bg-light border rounded">
+      <canvas id="waveform-reason" width="600" height="80" style="width: 100%; height: 40px;"></canvas>
+      <div class="text-center small text-danger fw-bold pulse-text">● RECORDING (Hindi/English)</div>
+      <!-- <div class="text-center small text-primary fw-bold pulse-text">
+    ● SPEAK IN HINDI (Converting to English...)
+</div> -->
+  </div>
+  
+  <textarea
+    id="reason-textarea"
+    name="reason"
+    class="form-control"
+    rows="4"
+    required
+    placeholder="Describe or record your symptoms or reason for consultation..."
+  ></textarea>
+  <small id="status-msg" class="text-muted"></small>
+</div>
                     
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle"></i> 
@@ -83,4 +116,122 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+    // 1. Elements ko select karna
+const voiceBtn = document.getElementById('voice-btn-reason');
+const micIcon = document.getElementById('mic-icon');
+const textarea = document.getElementById('reason-textarea');
+const vizContainer = document.getElementById('viz-container');
+const statusMsg = document.getElementById('status-msg');
+
+// 2. Speech Recognition Setup
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    
+    // Hindi mein sunne ke liye language 'hi-IN' set ki hai
+    recognition.lang = 'hi-IN'; 
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    let isRecording = false;
+
+    // Button Click Event
+    voiceBtn.addEventListener('click', () => {
+        if (!isRecording) {
+            recognition.start();
+        } else {
+            recognition.stop();
+        }
+    });
+
+    // Jab Recording Start ho
+    recognition.onstart = () => {
+        isRecording = true;
+        vizContainer.classList.remove('d-none'); // Waveform dikhao
+        micIcon.classList.replace('fa-microphone', 'fa-stop');
+        voiceBtn.classList.replace('btn-dark', 'btn-danger');
+        statusMsg.innerText = "Suno raha hoon... (Recording Started)";
+    };
+
+    // Jab bolna band karein aur Result aaye
+    recognition.onresult = async (event) => {
+        const transcript = event.results[0][0].transcript;
+        statusMsg.innerText = "English mein badal raha hoon...";
+
+        try {
+            // Hindi se English mein Translate karne ke liye API call
+            const sourceLang = 'hi';
+            const targetLang = 'en';
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(transcript)}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+            const translatedText = data[0][0][0];
+
+            // Textarea mein English text add karna
+            textarea.value += (textarea.value ? ' ' : '') + translatedText;
+            statusMsg.innerText = "Translated successfully!";
+        } catch (error) {
+            console.error("Translation Error:", error);
+            // Agar internet ya translation fail ho jaye to Hindi hi likh dega
+            textarea.value += (textarea.value ? ' ' : '') + transcript;
+            statusMsg.innerText = "Translation fail, Hindi text added.";
+        }
+    };
+
+    // Jab Recording Band ho
+    recognition.onend = () => {
+        isRecording = false;
+        vizContainer.classList.add('d-none'); // Waveform chhupao
+        micIcon.classList.replace('fa-stop', 'fa-microphone');
+        voiceBtn.classList.replace('btn-danger', 'btn-dark');
+        
+        // Final Status update jo aapne manga tha
+        statusMsg.innerText = "Recording Close"; 
+        
+        // 3 second baad status saaf kar do
+        setTimeout(() => { statusMsg.innerText = ""; }, 3000);
+    };
+
+    // Error handling
+    recognition.onerror = (event) => {
+        statusMsg.innerText = "Error: " + event.error;
+        vizContainer.classList.add('d-none');
+        isRecording = false;
+    };
+
+} else {
+    // Agar browser support nahi karta
+    voiceBtn.style.display = 'none';
+    statusMsg.innerText = "Aapka browser voice input support nahi karta.";
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.pulse-text {
+    animation: blinker 1.2s linear infinite;
+}
+
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+
+.circle {
+    transition: transform 0.2s ease;
+}
+
+.circle:active {
+    transform: scale(0.9);
+}
+</style>
+
 {% endblock %}
