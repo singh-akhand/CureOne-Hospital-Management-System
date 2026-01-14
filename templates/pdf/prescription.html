@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prescription</title>
+    <style>
+        /* PDF Page Settings */
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: Helvetica, sans-serif;
+            color: #333;
+            line-height: 1.5;
+            font-size: 11pt;
+        }
+
+        /* --- Header Section --- */
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .hospital-name {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #0056b3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .hospital-details {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 5px;
+        }
+        .doc-name {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #222;
+            text-align: right;
+        }
+        .doc-dept {
+            font-size: 10pt;
+            color: #0056b3;
+            text-align: right;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .doc-qual {
+            font-size: 9pt;
+            color: #555;
+            text-align: right;
+        }
+
+        /* --- Patient Info Grid (UPDATED) --- */
+        .patient-box {
+            width: 100%;
+            background-color: #f8fbff;
+            border: 1px solid #dbe9ff;
+            margin-bottom: 25px;
+            padding: 10px;
+        }
+        .pt-table {
+            width: 100%;
+        }
+        .pt-label {
+            font-size: 9pt;
+            color: #0056b3;
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 15%;
+            padding: 5px 0;
+        }
+        .pt-value {
+            font-size: 11pt;
+            color: #000;
+            font-weight: bold;
+            width: 35%;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        /* --- Diagnosis Section --- */
+        .section-header {
+            font-size: 12pt;
+            color: #fff;
+            background-color: #0056b3;
+            padding: 5px 10px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .diagnosis-text {
+            font-size: 12pt;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #0056b3;
+        }
+
+        /* --- Rx Section --- */
+        .rx-symbol {
+            font-family: serif;
+            font-size: 38pt;
+            color: #0056b3;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .rx-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .rx-table th {
+            text-align: left;
+            background-color: #e9ecef;
+            color: #333;
+            padding: 8px;
+            border-bottom: 2px solid #0056b3;
+            font-size: 10pt;
+            text-transform: uppercase;
+        }
+        .rx-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* --- Notes Section --- */
+        .notes-box {
+            background-color: #fff8e1;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            color: #856404;
+            font-size: 10pt;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        /* --- Footer --- */
+        .footer-spacer {
+            height: 50px;
+        }
+        .footer-table {
+            width: 100%;
+            margin-top: 30px;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            width: 200px;
+            margin-left: auto;
+            text-align: center;
+            padding-top: 5px;
+            font-size: 10pt;
+        }
+        .disclaimer {
+            text-align: center;
+            font-size: 8pt;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td valign="top" width="60%">
+                <div class="hospital-name">MAD-1 General Hospital</div>
+                <div class="hospital-details">
+                    123 Health Street, Medicity, India - 400001<br>
+                    Phone: +91 98765 43210  |  Email: help@hospital.com
+                </div>
+            </td>
+            <td valign="top" width="40%">
+                <div class="doc-name">Dr. {{ appointment.doctor.user.username }}</div>
+                <div class="doc-dept">{{ appointment.doctor.department.name }}</div>
+                <div class="doc-qual">{{ appointment.doctor.qualification }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="patient-box">
+        <table class="pt-table" cellspacing="5">
+            <tr>
+                <td class="pt-label">Patient Name:</td>
+                <td class="pt-value">{{ appointment.patient.user.username }}</td>
+                <td class="pt-label">Date:</td>
+                <td class="pt-value">{{ appointment.appointment_date.strftime('%d-%b-%Y') }}</td>
+            </tr>
+            <tr>
+                <td class="pt-label">Email:</td>
+                <td class="pt-value" style="font-size: 10pt;">{{ appointment.patient.user.email }}</td>
+                <td class="pt-label">OPD ID:</td>
+                <td class="pt-value">#{{ appointment.id }}</td>
+            </tr>
+            <tr>
+                <td class="pt-label">Phone:</td>
+                <td class="pt-value">{{ appointment.patient.user.phone if appointment.patient.user.phone else '--' }}</td>
+                <td class="pt-label">Address:</td>
+                <td class="pt-value">{{ appointment.patient.user.address if appointment.patient.user.address else 'N/A' }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section-header">Diagnosis</div>
+    <div class="diagnosis-text">
+        {{ appointment.treatment.diagnosis }}
+    </div>
+
+    <div class="rx-symbol">Rx</div>
+
+    <table class="rx-table">
+        <thead>
+            <tr>
+                <th width="60%">Medicine / Instruction</th>
+                <th width="40%">Frequency / Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 5px;">
+                        {{ appointment.treatment.treatment }}
+                    </div>
+                    
+                    {% if appointment.treatment.prescription %}
+                    <div style="margin-top: 10px; color: #555;">
+                        <strong>Additional Meds:</strong><br>
+                        {{ appointment.treatment.prescription }}
+                    </div>
+                    {% endif %}
+                </td>
+                <td>
+                    As prescribed.<br>
+                    <small style="color: #666;">(Take after food unless specified)</small>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if appointment.treatment.notes %}
+    <div class="notes-box">
+        <strong>Doctor's Advice / Notes:</strong><br>
+        {{ appointment.treatment.notes }}
+    </div>
+    {% endif %}
+
+    <div class="footer-spacer"></div>
+    <table class="footer-table">
+        <tr>
+            <td align="right">
+                <div class="signature-line">
+                    <strong>Dr. {{ appointment.doctor.user.username }}</strong><br>
+                    (Signature & Stamp)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="disclaimer">
+        This is a computer-generated document. No physical signature is required.<br>
+        Generated on: {{ appointment.appointment_date.strftime('%d-%b-%Y') }} | MAD-1 Hospital Management System
+    </div>
+
+</body>
+</html>

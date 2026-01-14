@@ -14,10 +14,17 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import threading
+from weasyprint import HTML
+from flask import Flask, render_template, redirect, url_for, request, flash, send_file, make_response
+import google.generativeai as genai
 
 # Create Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
+# Configure Gemini API
+# REPLACE 'YOUR_API_KEY_HERE' with the actual key you copied from Google AI Studio
+os.environ["GEMINI_API_KEY"] = "AIzaSyAmlnO1QKmsDcMqwPnUn5jA7QWktWB-Rd8"
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # Initialize database
 db.init_app(app)
@@ -823,6 +830,122 @@ def patient_cancel_appointment(appointment_id):
     flash('Appointment cancelled!', 'warning')
     return redirect(url_for('patient_appointments'))
 
+@app.route('/patient/appointment/<int:appointment_id>/download_prescription')
+@login_required
+@roles_required('patient')
+def download_prescription(appointment_id):
+    """Generate and download PDF prescription"""
+    appointment = Appointment.query.get_or_404(appointment_id)
+    
+    # Security check: Ensure the appointment belongs to the current user
+    if appointment.patient.user_id != current_user.id:
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('patient_dashboard'))
+    
+    # Check if treatment exists (cannot generate prescription if not treated)
+    if not appointment.treatment:
+        flash('Prescription not available yet.', 'warning')
+        return redirect(url_for('patient_appointments'))
+    
+    # Render the HTML template
+    html_content = render_template('pdf/prescription.html', appointment=appointment)
+    
+    # Generate PDF using WeasyPrint
+    pdf = HTML(string=html_content).write_pdf()
+    
+    # Create response
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=prescription_{appointment.id}.pdf'
+    
+    return response
+
+@app.route('/patient/symptom-checker', methods=['GET', 'POST'])
+@login_required
+@roles_required('patient')
+def symptom_checker():
+    """Smart AI Symptom Checker (Gemini + Local Fallback)"""
+    recommendation = None
+    symptoms_input = ''
+    
+    if request.method == 'POST':
+        symptoms_input = request.form.get('symptoms', '')
+        
+        # --- ATTEMPT 1: GOOGLE GEMINI API ---
+        try:
+            # Get list of departments from DB to guide the AI
+            departments = Department.query.with_entities(Department.name).all()
+            dept_list = [d.name for d in departments]
+            dept_string = ", ".join(dept_list)
+            
+            prompt = f"""
+            Act as a medical receptionist. 
+            Patient symptoms: "{symptoms_input}".
+            Available Departments: {dept_string}.
+            
+            Task: Return ONLY the exact name of the one best department from the list.
+            If unclear, return "General Medicine".
+            Do not write sentences, just the name.
+            """
+            
+            model = genai.GenerativeModel('gemini-2.5-flash')
+            response = model.generate_content(prompt)
+            suggested_dept = response.text.strip()
+            
+            # Verify AI response against DB
+            dept_obj = Department.query.filter_by(name=suggested_dept).first()
+            
+            if dept_obj:
+                recommendation = {
+                    'department': suggested_dept,
+                    'dept_id': dept_obj.id,
+                    'confidence': 'High (AI Analysis)'
+                }
+        
+        except Exception as e:
+            # --- ATTEMPT 2: LOCAL FALLBACK (If API fails/no internet) ---
+            print(f"Gemini API Error: {e}") # Print error to terminal for debugging
+            
+            # Your original dictionary logic serves as the backup
+            symptoms_lower = symptoms_input.lower()
+            knowledge_base = {
+                'Cardiology': ['heart', 'chest', 'pain', 'pressure', 'stroke', 'cardiac', 'pulse', 'breath'],
+                'Pediatrics': ['child', 'baby', 'infant', 'growth', 'vaccination', 'kids', 'toddler'],
+                'Orthopedics': ['bone', 'joint', 'fracture', 'knee', 'back', 'muscle', 'arthritis', 'leg', 'arm'],
+                'Neurology': ['headache', 'migraine', 'dizzy', 'seizure', 'numbness', 'brain', 'faint'],
+                'Dermatology': ['skin', 'rash', 'acne', 'itching', 'hair', 'nail', 'spots', 'burn'],
+                'General Medicine': ['fever', 'cold', 'flu', 'weakness', 'fatigue', 'cough', 'vomit', 'stomach']
+            }
+            
+            scores = {dept: 0 for dept in knowledge_base}
+            for dept, keywords in knowledge_base.items():
+                for word in keywords:
+                    if word in symptoms_lower:
+                        scores[dept] += 1
+            
+            best_match = max(scores, key=scores.get)
+            
+            if scores[best_match] > 0:
+                dept_obj = Department.query.filter_by(name=best_match).first()
+                if dept_obj:
+                    recommendation = {
+                        'department': best_match,
+                        'dept_id': dept_obj.id,
+                        'confidence': 'Moderate (Local Backup)'
+                    }
+            else:
+                # Absolute fallback
+                gen_med = Department.query.filter_by(name='General Medicine').first()
+                if gen_med:
+                    recommendation = {
+                        'department': 'General Medicine',
+                        'dept_id': gen_med.id,
+                        'confidence': 'Low (Default)'
+                    }
+
+    return render_template('patient/symptom_checker.html', 
+                         recommendation=recommendation, 
+                         symptoms_input=symptoms_input)
 
 # ========== RUN APPLICATION ==========
 
