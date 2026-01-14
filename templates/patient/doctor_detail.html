@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Details{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('patient_doctors') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Doctors
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user-md fa-3x"></i>
+                    </div>
+                    <div class="ms-4">
+                        <h2 class="mb-1">{{ doctor.user.username }}</h2>
+                        <h5><span class="badge bg-info">{{ doctor.department.name }}</span></h5>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Professional Information</h5>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+                        <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+                        <p><strong>Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Email:</strong> {{ doctor.user.email }}</p>
+                        <p><strong>Phone:</strong> {{ doctor.user.phone or 'Not available' }}</p>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Availability</h5>
+                <p><strong>Available Days:</strong> {{ doctor.available_days }}</p>
+                <p><strong>Available Time:</strong> {{ doctor.available_time }}</p>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('patient_book_appointment', doctor_id=doctor.id) }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-calendar-plus"></i> Book Appointment
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-hospital"></i> Department Info</h5>
+                        <h6>{{ doctor.department.name }}</h6>
+                        <p class="card-text">{{ doctor.department.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Doctors</h6>
+                        <h2 class="mb-0">{{ total_doctors }}</h2>
+                    </div>
+                    <i class="fas fa-user-md fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-primary bg-opacity-75">
+                <a href="{{ url_for('admin_doctors') }}" class="text-white text-decoration-none">
+                    <small>View Details <i class="fas fa-arrow-right"></i></small>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Patients</h6>
+                        <h2 class="mb-0">{{ total_patients }}</h2>
+                    </div>
+                    <i class="fas fa-users fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-success bg-opacity-75">
+                <a href="{{ url_for('admin_patients') }}" class="text-white text-decoration-none">
+                    <small>View Details <i class="fas fa-arrow-right"></i></small>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Appointments</h6>
+                        <h2 class="mb-0">{{ total_appointments }}</h2>
+                    </div>
+                    <i class="fas fa-calendar-check fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-info bg-opacity-75">
+                <a href="{{ url_for('admin_appointments') }}" class="text-white text-decoration-none">
+                    <small>View Details <i class="fas fa-arrow-right"></i></small>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Departments</h6>
+                        <h2 class="mb-0">{{ total_departments }}</h2>
+                    </div>
+                    <i class="fas fa-hospital fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-warning bg-opacity-75">
+                <small>Total Departments</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Appointments -->
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-clock"></i> Recent Appointments</h5>
+    </div>
+    <div class="card-body">
+        {% if recent_appointments %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in recent_appointments %}
+                        <tr>
+                            <td>{{ apt.appointment_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ apt.appointment_time }}</td>
+                            <td>{{ apt.patient.user.username }}</td>
+                            <td>{{ apt.doctor.user.username }}</td>
+                            <td>
+                                {% if apt.status == 'Booked' %}
+                                    <span class="badge bg-primary">{{ apt.status }}</span>
+                                {% elif apt.status == 'Completed' %}
+                                    <span class="badge bg-success">{{ apt.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ apt.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">No appointments yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

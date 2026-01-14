@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hospital Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5 bg-light rounded">
+    <h1 class="display-4"><i class="fas fa-hospital text-primary"></i> Hospital Management System</h1>
+    <p class="lead">Efficient Healthcare Management for Modern Hospitals</p>
+    <div class="mt-4">
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('security.login') }}" class="btn btn-primary btn-lg mx-2">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="{{ url_for('security.register') }}" class="btn btn-success btn-lg mx-2">
+                <i class="fas fa-user-plus"></i> Register as Patient
+            </a>
+        {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Expert Doctors</h5>
+                <p class="card-text">Access to qualified doctors across multiple specializations and departments.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Easy Appointments</h5>
+                <p class="card-text">Book appointments online with your preferred doctor at convenient times.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-file-medical fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Medical Records</h5>
+                <p class="card-text">Maintain complete medical history and treatment records digitally.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Departments Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h3 class="text-center mb-4">Our Departments</h3>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-heartbeat text-danger"></i> Cardiology</h5>
+                <p class="card-text">Heart and cardiovascular system specialists</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-child text-primary"></i> Pediatrics</h5>
+                <p class="card-text">Medical care for infants and children</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-bone text-secondary"></i> Orthopedics</h5>
+                <p class="card-text">Bones, joints, and muscle treatment</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-brain text-info"></i> Neurology</h5>
+                <p class="card-text">Nervous system disorder specialists</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-hand-sparkles text-warning"></i> Dermatology</h5>
+                <p class="card-text">Skin condition and treatment experts</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-stethoscope text-success"></i> General Medicine</h5>
+                <p class="card-text">General health and wellness care</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

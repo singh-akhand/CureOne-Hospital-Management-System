@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Appointments{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-calendar-check"></i> Manage Appointments</h2>
+    <a href="{{ url_for('admin_export_appointments') }}" class="btn btn-success">
+        <i class="fas fa-file-csv"></i> Export to CSV
+    </a>
+</div>
+
+<!-- Filter Buttons -->
+<div class="btn-group mb-4" role="group">
+    <a href="{{ url_for('admin_appointments', status='all') }}" class="btn btn-outline-primary {% if status_filter == 'all' %}active{% endif %}">
+        All
+    </a>
+    <a href="{{ url_for('admin_appointments', status='Booked') }}" class="btn btn-outline-primary {% if status_filter == 'Booked' %}active{% endif %}">
+        Booked
+    </a>
+    <a href="{{ url_for('admin_appointments', status='Completed') }}" class="btn btn-outline-success {% if status_filter == 'Completed' %}active{% endif %}">
+        Completed
+    </a>
+    <a href="{{ url_for('admin_appointments', status='Cancelled') }}" class="btn btn-outline-danger {% if status_filter == 'Cancelled' %}active{% endif %}">
+        Cancelled
+    </a>
+</div>
+
+<!-- Appointments List -->
+<div class="card shadow">
+    <div class="card-body">
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in appointments %}
+                        <tr>
+                            <td>{{ apt.id }}</td>
+                            <td>{{ apt.appointment_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ apt.appointment_time }}</td>
+                            <td>{{ apt.patient.user.username }}</td>
+                            <td>{{ apt.doctor.user.username }}</td>
+                            <td><span class="badge bg-info">{{ apt.doctor.department.name }}</span></td>
+                            <td>{{ apt.reason[:30] }}...</td>
+                            <td>
+                                {% if apt.status == 'Booked' %}
+                                    <span class="badge bg-primary">{{ apt.status }}</span>
+                                {% elif apt.status == 'Completed' %}
+                                    <span class="badge bg-success">{{ apt.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ apt.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center">No appointments found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

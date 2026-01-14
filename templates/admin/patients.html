@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Patients{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-users"></i> Manage Patients</h2>
+
+<!-- Search Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or email..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Patients List -->
+<div class="card shadow">
+    <div class="card-body">
+        {% if patients %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Blood Group</th>
+                            <th>Registered On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td>{{ patient.user.username }}</td>
+                            <td>{{ patient.user.email }}</td>
+                            <td>{{ patient.user.phone or 'N/A' }}</td>
+                            <td>{{ patient.blood_group or 'N/A' }}</td>
+                            <td>{{ patient.user.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin_delete_patient', patient_id=patient.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this patient?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-user-times"></i> Remove
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center">No patients found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

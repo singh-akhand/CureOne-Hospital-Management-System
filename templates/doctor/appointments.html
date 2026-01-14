@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}My Appointments{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-calendar-check"></i> My Appointments</h2>
+
+<!-- Filter Buttons -->
+<div class="btn-group mb-4" role="group">
+    <a href="{{ url_for('doctor_appointments', status='all') }}" class="btn btn-outline-primary {% if status_filter == 'all' %}active{% endif %}">
+        All
+    </a>
+    <a href="{{ url_for('doctor_appointments', status='Booked') }}" class="btn btn-outline-primary {% if status_filter == 'Booked' %}active{% endif %}">
+        Booked
+    </a>
+    <a href="{{ url_for('doctor_appointments', status='Completed') }}" class="btn btn-outline-success {% if status_filter == 'Completed' %}active{% endif %}">
+        Completed
+    </a>
+    <a href="{{ url_for('doctor_appointments', status='Cancelled') }}" class="btn btn-outline-danger {% if status_filter == 'Cancelled' %}active{% endif %}">
+        Cancelled
+    </a>
+</div>
+
+<!-- Appointments List -->
+<div class="card shadow">
+    <div class="card-body">
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in appointments %}
+                        <tr>
+                            <td>{{ apt.appointment_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ apt.appointment_time }}</td>
+                            <td>{{ apt.patient.user.username }}</td>
+                            <td>{{ apt.reason[:50] }}...</td>
+                            <td>
+                                {% if apt.status == 'Booked' %}
+                                    <span class="badge bg-primary">{{ apt.status }}</span>
+                                {% elif apt.status == 'Completed' %}
+                                    <span class="badge bg-success">{{ apt.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ apt.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('doctor_appointment_detail', appointment_id=apt.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center">No appointments found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

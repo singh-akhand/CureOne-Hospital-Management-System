@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Hospital Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4"><i class="fas fa-user-plus"></i> Register</h3>
+                <p class="text-center text-muted">Create your patient account</p>
+                
+                <form method="POST" action="{{ url_for('security.register') }}">
+                    {{ register_user_form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ register_user_form.username.label(class="form-label") }}
+                        {{ register_user_form.username(class="form-control", placeholder="Choose a username") }}
+                        {% if register_user_form.username.errors %}
+                            <div class="text-danger">
+                                {% for error in register_user_form.username.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ register_user_form.email.label(class="form-label") }}
+                        {{ register_user_form.email(class="form-control", placeholder="Enter your email") }}
+                        {% if register_user_form.email.errors %}
+                            <div class="text-danger">
+                                {% for error in register_user_form.email.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ register_user_form.password.label(class="form-label") }}
+                        {{ register_user_form.password(class="form-control", placeholder="Create a password") }}
+                        {% if register_user_form.password.errors %}
+                            <div class="text-danger">
+                                {% for error in register_user_form.password.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ register_user_form.password_confirm.label(class="form-label") }}
+                        {{ register_user_form.password_confirm(class="form-control", placeholder="Confirm your password") }}
+                        {% if register_user_form.password_confirm.errors %}
+                            <div class="text-danger">
+                                {% for error in register_user_form.password_confirm.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ register_user_form.submit(class="btn btn-success btn-lg") }}
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <p class="text-center mb-0">
+                    Already have an account? 
+                    <a href="{{ url_for('security.login') }}">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
