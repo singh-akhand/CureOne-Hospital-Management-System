@@ -1,330 +1,197 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Cure One Hospital{% endblock %}
-
-{% block extra_css %}
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
-        color: #334155;
-    }
-    .hero-gradient {
-        background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
-    }
-    html { scroll-behavior: smooth; }
-
-    /* subtle floating animation */
-    .float-soft {
-        animation: floatSoft 6s ease-in-out infinite;
-    }
-    @keyframes floatSoft {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-
-    /* glowing gradient ring */
-    .glow-ring {
-        background: conic-gradient(from 180deg, rgba(34,211,238,0.4), rgba(59,130,246,0.3), rgba(45,212,191,0.35), rgba(34,211,238,0.4));
-        filter: blur(18px);
-    }
-
-    /* card hover */
-    .card-hover {
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-    .card-hover:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 40px -18px rgba(15,23,42,0.35);
-        border-color: rgba(14,165,233,0.5);
-    }
-
-    /* small pill badge in stats strip */
-    .pill {
-        border-radius: 999px;
-    }
-</style>
-{% endblock %} 
+{% block title %}Home - Hospital Management System{% endblock %}
 
 {% block content %}
-<main class="antialiased">
-    <section class="hero-gradient min-h-[100vh] flex items-center relative overflow-hidden px-6 lg:px-12 py-12">
-        <div class="absolute top-0 right-0 w-1/2 h-full bg-cyan-50/50 -skew-x-12 transform origin-top-right -z-10 hidden lg:block"></div>
+<!-- Hero Section -->
+<!-- <div class="hero-section text-left py-8 bg-light rounded">
+    <h1 class="display-4"><i class="fas fa-hospital text-primary"></i> Hospital Management System</h1>
+    <p class="lead">Efficient Healthcare Management for Modern Hospitals</p>
+    <div class="mt-4">
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('security.login') }}" class="btn btn-primary btn-lg mx-2">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="{{ url_for('security.register') }}" class="btn btn-success btn-lg mx-2">
+                <i class="fas fa-user-plus"></i> Register as Patient
+            </a>
+        {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</div> -->
 
-        <div class="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-7">
-                <div class="inline-flex items-center bg-cyan-100 text-cyan-800 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
-                    <span id="greeting-text">Healing Reimagined</span>
+
+<section class="hero-container py-5 px-4 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7 text-start">
+                <div class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill mb-3">
+                    <i class="fas fa-stethoscope me-2"></i>Smart Care Solutions
                 </div>
-
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-slate-900">
-                    One patient.<br>
-                    One unique path to recovery.
+                <h1 class="display-3 fw-bold text-dark mb-4">
+                    <span class="text-primary"><i class="fas fa-heart-pulse"></i></span> 
+                    Hospital Management
                 </h1>
-
-                <p class="text-lg text-slate-600 max-w-lg leading-relaxed">
-                    We believe healthcare isn't one-size-fits-all. Cure One combines advanced medical technology with deeply personalized human care.
-                    <span id="typed-tagline" class="block text-sm text-cyan-700 font-semibold mt-2"></span>
+                <p class="lead text-secondary mb-5 fs-4">
+                    Bringing digital intelligence to your healthcare journey. 
+                    Manage records, check symptoms, and connect with ease.
                 </p>
-
-                <div class="flex flex-col sm:flex-row gap-4 mt-6">
-                    <button id="sos-btn" class="group relative flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg shadow-rose-200 transition-all overflow-hidden">
-                        <span class="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform translate-x-0 -skew-x-12 bg-rose-500 group-hover:bg-rose-700 group-hover:skew-x-12"></span>
-                        <span class="relative flex items-center" id="sos-content">
-                            <i class="fas fa-tower-broadcast animate-pulse mr-3"></i>
-                            <span id="sos-text">EMERGENCY SOS</span>
-                        </span>
-                    </button>
-
+                
+                <div class="d-flex flex-wrap gap-3">
                     {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('security.register') }}" class="flex items-center justify-center border-2 border-slate-300 text-slate-700 hover:border-cyan-700 hover:text-cyan-700 px-8 py-4 rounded-lg font-bold text-lg transition-all bg-white/70">
-                            Register as Patient <i class="fas fa-arrow-right ml-3"></i>
+                        <a href="{{ url_for('security.login') }}" class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-lg shadow-primary">
+                            <i class="fas fa-unlock-alt me-2"></i>Access Portal
+                        </a>
+                        <a href="{{ url_for('security.register') }}" class="btn btn-outline-success btn-lg px-5 py-3 rounded-pill">
+                            <i class="fas fa-id-card me-2"></i>New Patient
                         </a>
                     {% else %}
-                        <a href="{{ url_for('dashboard') }}" class="flex items-center justify-center border-2 border-slate-300 text-slate-700 hover:border-cyan-700 hover:text-cyan-700 px-8 py-4 rounded-lg font-bold text-lg transition-all bg-white/70">
-                            Go to Dashboard <i class="fas fa-tachometer-alt ml-3"></i>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-lg shadow-primary">
+                            <i class="fas fa-th-large me-2"></i>My Dashboard
                         </a>
                     {% endif %}
                 </div>
-
-                <p class="text-sm text-slate-500 italic">
-                    *SOS shares your location with registered emergency contacts.
-                </p>
-
-                <div class="mt-6 bg-white/80 shadow-[0_12px_40px_-20px_rgba(15,23,42,0.35)] border border-slate-100 rounded-2xl p-4 flex flex-wrap gap-4 text-sm">
-                    <div class="flex items-center gap-3">
-                        <span class="w-8 h-8 pill bg-cyan-100 flex items-center justify-center text-cyan-700">
-                            <i class="fas fa-bed"></i>
-                        </span>
-                        <div>
-                            <div class="font-semibold text-slate-800"><span id="beds-available">18</span> / 120 beds free</div>
-                            <div class="text-[11px] text-slate-500">Updated just now</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <span class="w-8 h-8 pill bg-emerald-100 flex items-center justify-center text-emerald-700">
-                            <i class="fas fa-heart-pulse"></i>
-                        </span>
-                        <div>
-                            <div class="font-semibold text-slate-800"><span id="today-opd">74</span> OPD slots today</div>
-                            <div class="text-[11px] text-slate-500">Cardiology filling fast</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <span class="w-8 h-8 pill bg-indigo-100 flex items-center justify-center text-indigo-700">
-                            <i class="fas fa-user-shield"></i>
-                        </span>
-                        <div>
-                            <div class="font-semibold text-slate-800">Avg wait: <span id="wait-time">12</span> min</div>
-                            <div class="text-[11px] text-slate-500">Real-time triage estimates</div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <div class="hidden lg:flex justify-end relative">
-                <div class="absolute -top-10 -right-10 w-64 h-64 rounded-full glow-ring opacity-70"></div>
-                <div class="absolute bottom-8 -left-10 w-40 h-40 rounded-full bg-cyan-200/40 blur-3xl"></div>
-
-                <div class="w-4/5 h-[500px] bg-slate-200 rounded-2xl overflow-hidden shadow-xl relative float-soft">
-                    <img src="{{ url_for('static', filename='images/d2.jpeg') }}" class="object-cover w-full h-full" alt="Hospital staff">
-                    <div class="absolute inset-0 bg-cyan-900/10 mix-blend-multiply"></div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-glass-card p-5 text-center">
+                    <div class="icon-circle mb-4">
+                        <i class="fas fa-user-shield fa-4x text-white"></i>
+                    </div>
+                    <h3 class="fw-bold">Privacy First</h3>
+                    <p class="text-muted">Your health data is protected by hospital-grade security protocols.</p>
                 </div>
             </div>
         </div>
-    </section>
-<br><br><br><br>
-    <section id="departments" class="px-6 lg:px-12 relative z-20 -mt-16 lg:-mt-20 mb-24">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
-            <div class="bg-white p-8 rounded-xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-slate-100 card-hover">
-                <div class="w-12 h-12 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center text-xl mb-6">
-                    <i class="fas fa-user-doctor"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3 text-slate-800">Find a Specialist</h3>
-                <p class="text-slate-600 mb-6">Browse our directory of top-tier physicians by department or condition.</p>
-                <a href="#" class="text-cyan-700 font-semibold flex items-center group">
-                    Search Now
-                    <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition"></i>
-                </a>
-            </div>
-
-            <div id="portal" class="bg-blue-900 p-8 rounded-xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] text-white card-hover border border-blue-800">
-                <div class="w-12 h-12 bg-slate-800 text-cyan-300 rounded-lg flex items-center justify-center text-xl mb-6">
-                    <i class="fas fa-notes-medical"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Patient Portal</h3>
-                <p class="text-slate-300 mb-6">Securely access your medical records, test results, and upcoming appointments.</p>
-                <a href="{{ url_for('security.login') }}" class="text-cyan-300 font-semibold flex items-center group">
-                    Secure Login
-                    <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition"></i>
-                </a>
-            </div>
-
-            <div class="bg-white p-8 rounded-xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-slate-100 card-hover">
-                <div class="w-12 h-12 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center text-xl mb-6">
-                    <i class="fas fa-laptop-medical"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3 text-slate-800">Virtual Urgent Care</h3>
-                <p class="text-slate-600 mb-6">Connect with a provider via video for non-emergency issues from home.</p>
-                <a href="#" class="text-cyan-700 font-semibold flex items-center group">
-                    Start Visit
-                    <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition"></i>
-                </a>
+    </div>
+</section>
+<!-- Features Section -->
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-success">
+            <div class="card-body text-center">
+                <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Expert Doctors</h5>
+                <p class="card-text">Access to qualified doctors across multiple specializations and departments.</p>
             </div>
         </div>
-    </section>
-
-    <section class="py-20 px-6 lg:px-12 bg-white">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-                Not just treating symptoms. <br>Treating people.
-            </h2>
-            <p class="text-lg text-slate-600 leading-relaxed mb-12">
-                At Cure One, we understand that anxiety often accompanies illness. Our facility is designed to be a calm sanctuary. We combine the latest in robotic surgery with old-fashioned compassion.
-            </p>
-            <div class="flex justify-center gap-12 text-center flex-wrap">
-                <div>
-                    <div class="text-4xl font-bold text-cyan-700 mb-2">98%</div>
-                    <div class="text-slate-500 font-medium">Patient Satisfaction</div>
-                </div>
-                <div>
-                    <div class="text-4xl font-bold text-cyan-700 mb-2">24/7</div>
-                    <div class="text-slate-500 font-medium">Rapid Response</div>
-                </div>
-                <div>
-                    <div class="text-4xl font-bold text-cyan-700 mb-2">Top 10</div>
-                    <div class="text-slate-500 font-medium">Regional Ranking</div>
-                </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-success">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Easy Appointments</h5>
+                <p class="card-text">Book appointments online with your preferred doctor at convenient times.</p>
             </div>
         </div>
-    </section>
-</main>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-success">
+            <div class="card-body text-center">
+                <i class="fas fa-file-medical fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Medical Records</h5>
+                <p class="card-text">Maintain complete medical history and treatment records digitally.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm border-success">
+        <div class="card-body text-center">
+            <i class="fas fa-bell fa-3x text-warning mb-3"></i>
+            <h5 class="card-title">Notifications</h5>
+            <p class="card-text">Stay updated with real-time alerts regarding your appointments, test results, and health tips.</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm border-success">
+        <div class="card-body text-center">
+            <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+            <h5 class="card-title ">AI Symptom Checker</h5>
+            <p class="card-text">Quickly analyze your symptoms with our AI-powered tool to understand potential causes and next steps.</p>
+        </div>
+        <!-- <div class="card-footer bg-transparent border-0 pb-4">
+            <button class="btn btn-outline-primary btn-sm rounded-pill px-4">Start Analysis</button>
+        </div> -->
+    </div>
+</div>
+
+<div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm border-success">
+        <div class="card-body text-center">
+            <div class="mb-3">
+                <i class="fas fa-microphone fa-3x text-success" id="mic-icon"></i>
+            </div>
+            <h5 class="card-title ">Voice Consultation</h5>
+            <p class="card-text">Don't want to type? Speak your symptoms naturally, and our AI will transcribe and analyze them for you.</p>
+        </div>
+        
+    </div>
+</div>
+
+
+
+    
+</div>
+
+<!-- Departments Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h3 class="text-center mb-4">Our Departments</h3>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-heartbeat text-danger"></i> Cardiology</h5>
+                <p class="card-text">Heart and cardiovascular system specialists</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-child text-primary"></i> Pediatrics</h5>
+                <p class="card-text">Medical care for infants and children</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-bone text-secondary"></i> Orthopedics</h5>
+                <p class="card-text">Bones, joints, and muscle treatment</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-brain text-info"></i> Neurology</h5>
+                <p class="card-text">Nervous system disorder specialists</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-hand-sparkles text-warning"></i> Dermatology</h5>
+                <p class="card-text">Skin condition and treatment experts</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-stethoscope text-success"></i> General Medicine</h5>
+                <p class="card-text">General health and wellness care</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
-{% block extra_js %}
-<script>
-// Run when DOM is ready
-(function(){
-    // SOS BUTTON (defensive)
-    const sosBtn = document.getElementById('sos-btn');
-    const sosText = document.getElementById('sos-text');
-    let isSending = false;
-    if (sosBtn && sosText) {
-        sosBtn.addEventListener('click', () => {
-            if (isSending) return;
-            isSending = true;
-            const originalText = sosText.innerText;
-            sosText.innerText = "ACQUIRING LOCATION...";
-            sosBtn.classList.remove('bg-rose-600', 'hover:bg-rose-700');
-            sosBtn.classList.add('bg-slate-700', 'cursor-wait');
-
-            if (!navigator.geolocation) {
-                alert("Geolocation is not supported by your browser.");
-                resetButton(originalText);
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    sosText.innerText = "SENDING ALERT...";
-                    console.log('[SIM] SOS payload', {lat,lng});
-                    setTimeout(() => {
-                        alert(`SOS SENT! \nEmergency contacts notified.\nLat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
-                        resetButton(originalText);
-                    }, 1500);
-                },
-                (error) => {
-                    let msg = "Unable to retrieve location.";
-                    if (error && error.code === error.PERMISSION_DENIED) {
-                        msg = "Location permission denied. Please enable location services to use SOS.";
-                    }
-                    alert(msg);
-                    resetButton(originalText);
-                }
-            );
-        });
-    }
-    function resetButton(originalText) {
-        isSending = false;
-        if (sosText) sosText.innerText = originalText;
-        if (sosBtn) {
-            sosBtn.classList.remove('bg-slate-700', 'cursor-wait');
-            sosBtn.classList.add('bg-rose-600', 'hover:bg-rose-700');
-        }
-    }
-
-    // LIVE CLOCK + GREETING
-    const clockEl = document.getElementById('live-clock');
-    const greetingEl = document.getElementById('greeting-text');
-    function updateClock() {
-        if (!clockEl) return;
-        const now = new Date();
-        const hrs = now.getHours();
-        const mins = now.getMinutes().toString().padStart(2, '0');
-        const greeting = hrs < 12 ? "Good morning · Healing Reimagined" : hrs < 18 ? "Good afternoon · Healing Reimagined" : "Good evening · Healing Reimagined";
-        clockEl.textContent = `Today · ${now.toLocaleDateString()} · ${hrs}:${mins}`;
-        if (greetingEl) greetingEl.textContent = greeting;
-    }
-    updateClock();
-    setInterval(updateClock, 60000);
-
-    // TYPEWRITER TAGLINE (defensive)
-    const taglineEl = document.getElementById('typed-tagline');
-    const taglines = [
-        "Smart triage, faster relief.",
-        "AI-assisted insights with human empathy.",
-        "From first symptom to full recovery, we’re with you.",
-        "Designed for comfort, powered by science."
-    ];
-    if (taglineEl) {
-        let taglineIndex = 0, charIndex = 0, typingForward = true;
-        (function typeLoop(){
-            const current = taglines[taglineIndex];
-            if (typingForward) {
-                taglineEl.textContent = current.slice(0, charIndex++);
-                if (charIndex > current.length) { typingForward = false; setTimeout(typeLoop, 1500); return; }
-            } else {
-                taglineEl.textContent = current.slice(0, charIndex--);
-                if (charIndex < 0) { typingForward = true; taglineIndex = (taglineIndex + 1) % taglines.length; }
-            }
-            setTimeout(typeLoop, typingForward ? 55 : 35);
-        })();
-    }
-
-    // FAKE LIVE STATS (defensive)
-    const bedsEl = document.getElementById('beds-available');
-    const opdEl = document.getElementById('today-opd');
-    const waitEl = document.getElementById('wait-time');
-    const healthEl = document.getElementById('system-health');
-    const gaugeEl = document.getElementById('live-gauge');
-
-    function randomAround(base, spread, min = 0) {
-        const val = base + (Math.random() * spread * 2 - spread);
-        return Math.max(min, Math.round(val));
-    }
-
-    function updateStats() {
-        if (bedsEl) bedsEl.textContent = randomAround(18, 4, 4);
-        if (opdEl) opdEl.textContent = randomAround(74, 12, 20);
-        if (waitEl) waitEl.textContent = randomAround(12, 5, 3);
-        if (healthEl) healthEl.textContent = (99.4 + Math.random()*0.6).toFixed(1) + "%";
-        if (gaugeEl) {
-            const gaugeTextOptions = ["On-schedule surgeries","Smooth ER inflow","Stable ICUs & HDUs","All systems nominal"];
-            gaugeEl.textContent = gaugeTextOptions[Math.floor(Math.random()*gaugeTextOptions.length)];
-        }
-    }
-    updateStats();
-    setInterval(updateStats, 15000);
-})();
-</script>
-{% endblock %}
-
-
-
-
-
