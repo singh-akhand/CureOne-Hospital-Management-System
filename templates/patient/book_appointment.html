@@ -21,7 +21,7 @@
                 <hr>
                 <p class="mb-1"><strong>Qualification:</strong> {{ doctor.qualification }}</p>
                 <p class="mb-1"><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
-                <p class="mb-1"><strong>Fee:</strong> ${{ doctor.consultation_fee }}</p>
+                <p class="mb-1"><strong>Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
                 <hr>
                 <p class="mb-1"><strong>Available Days:</strong></p>
                 <p>{{ doctor.available_days }}</p>
@@ -100,7 +100,7 @@
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle"></i> 
                         <strong>Note:</strong> Please arrive 10 minutes before your scheduled time. 
-                        Consultation fee of ${{ doctor.consultation_fee }} will be charged.
+                        Consultation fee of ₹{{ doctor.consultation_fee }} will be charged.
                     </div>
                     
                     <div class="d-flex gap-2">

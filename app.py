@@ -17,6 +17,7 @@ import threading
 from weasyprint import HTML
 from flask import Flask, render_template, redirect, url_for, request, flash, send_file, make_response
 import google.generativeai as genai
+from sqlalchemy import func
 
 # Create Flask app
 app = Flask(__name__)
@@ -195,21 +196,86 @@ def dashboard():
 @login_required
 @roles_required('admin')
 def admin_dashboard():
-    """Admin dashboard with statistics and recent appointments"""
+    """Admin dashboard with Advanced Analytics"""
+    
+    # --- 1. Basic Counters  ---
     total_doctors = Doctor.query.count()
     total_patients = Patient.query.count()
     total_appointments = Appointment.query.count()
     total_departments = Department.query.count()
     
-    # Get recent 10 appointments
+    # --- 2. ADVANCED ANALYTICS  ---
+
+    # CHART 1: Revenue per Doctor
+    # Formula: Completed Appointments * Consultation Fee
+    revenue_data = db.session.query(
+        User.username, 
+        func.count(Appointment.id), 
+        Doctor.consultation_fee
+    ).join(Doctor, Doctor.user_id == User.id)\
+     .join(Appointment, Appointment.doctor_id == Doctor.id)\
+     .filter(Appointment.status == 'Completed')\
+     .group_by(Doctor.id).all()
+    
+    doc_revenue_labels = [r[0] for r in revenue_data]  # Doctor Names
+    doc_revenue_values = [r[1] * r[2] for r in revenue_data]  # Total Money
+
+    # CHART 2: Patient Influx (Last 7 Days)
+    seven_days_ago = datetime.utcnow() - timedelta(days=6)
+    influx_data = db.session.query(
+        func.date(User.created_at), 
+        func.count(Patient.id)
+    ).join(Patient, Patient.user_id == User.id)\
+     .filter(User.created_at >= seven_days_ago)\
+     .group_by(func.date(User.created_at)).all()
+    
+    # Logic to fill missing dates with 0s
+    influx_dict = {str(r[0]): r[1] for r in influx_data}
+    influx_labels = []
+    influx_values = []
+    for i in range(6, -1, -1):
+        date_chk = (datetime.utcnow() - timedelta(days=i)).strftime('%Y-%m-%d')
+        influx_labels.append(date_chk)
+        influx_values.append(influx_dict.get(date_chk, 0))
+
+    # CHART 3: Appointments by Department
+    dept_data = db.session.query(
+        Department.name, 
+        func.count(Appointment.id)
+    ).join(Doctor, Doctor.department_id == Department.id)\
+     .join(Appointment, Appointment.doctor_id == Doctor.id)\
+     .group_by(Department.name).all()
+    
+    dept_labels = [d[0] for d in dept_data]
+    dept_values = [d[1] for d in dept_data]
+
+    # CHART 4: Appointment Status (Success Rate)
+    status_data = db.session.query(
+        Appointment.status, 
+        func.count(Appointment.id)
+    ).group_by(Appointment.status).all()
+    
+    status_labels = [s[0] for s in status_data]
+    status_values = [s[1] for s in status_data]
+
+    # Recent Appointments List 
     recent_appointments = Appointment.query.order_by(Appointment.created_at.desc()).limit(10).all()
     
     return render_template('admin/dashboard.html',
-                         total_doctors=total_doctors,
-                         total_patients=total_patients,
-                         total_appointments=total_appointments,
-                         total_departments=total_departments,
-                         recent_appointments=recent_appointments)
+                           total_doctors=total_doctors,
+                           total_patients=total_patients,
+                           total_appointments=total_appointments,
+                           total_departments=total_departments,
+                           recent_appointments=recent_appointments,
+                           # Pass Analytics Data
+                           doc_revenue_labels=doc_revenue_labels,
+                           doc_revenue_values=doc_revenue_values,
+                           influx_labels=influx_labels,
+                           influx_values=influx_values,
+                           dept_labels=dept_labels,
+                           dept_values=dept_values,
+                           status_labels=status_labels,
+                           status_values=status_values)
 
 
 @app.route('/admin/doctors')

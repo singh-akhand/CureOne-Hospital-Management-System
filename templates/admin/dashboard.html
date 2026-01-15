@@ -82,6 +82,111 @@
     </div>
 </div>
 
+<div class="row mb-4">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-success"><i class="fas fa-hand-holding-usd"></i> Revenue by Doctor</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-line"></i> Patient Influx (Last 7 Days)</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="influxChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white py-3">
+                <h6 class="m-0 font-weight-bold text-info"><i class="fas fa-hospital-user"></i> Traffic by Department</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="deptChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white py-3">
+                <h6 class="m-0 font-weight-bold text-warning"><i class="fas fa-chart-pie"></i> Appointment Success Rate</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 1. Revenue Chart (Bar)
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ doc_revenue_labels | tojson }},
+            datasets: [{
+                label: 'Revenue (₹)',
+                data: {{ doc_revenue_values | tojson }},
+                backgroundColor: '#1cc88a',
+                borderRadius: 5
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    // 2. Patient Influx Chart (Line)
+    new Chart(document.getElementById('influxChart'), {
+        type: 'line',
+        data: {
+            labels: {{ influx_labels | tojson }},
+            datasets: [{
+                label: 'New Patients',
+                data: {{ influx_values | tojson }},
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+
+    // 3. Department Chart (Doughnut)
+    new Chart(document.getElementById('deptChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ dept_labels | tojson }},
+            datasets: [{
+                data: {{ dept_values | tojson }},
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796']
+            }]
+        }
+    });
+
+    // 4. Status Chart (Pie)
+    new Chart(document.getElementById('statusChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ status_labels | tojson }},
+            datasets: [{
+                data: {{ status_values | tojson }},
+                backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b'] // Yellow (Booked), Green (Completed), Red (Cancelled)
+            }]
+        }
+    });
+</script>
+
 <!-- Recent Appointments -->
 <div class="card shadow">
     <div class="card-header bg-primary text-white">
