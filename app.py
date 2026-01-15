@@ -25,9 +25,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config.from_object(Config)
 # Configure Gemini API
-# REPLACE 'YOUR_API_KEY_HERE' with the actual key you copied from Google AI Studio
-os.environ["GEMINI_API_KEY"] = "AIzaSyAr9mi-QlXtCD11g8cOVyafzR5rpyIvlXw"
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # Initialize database
 db.init_app(app)
