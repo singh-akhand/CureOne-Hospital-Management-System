@@ -18,13 +18,15 @@ from weasyprint import HTML
 from flask import Flask, render_template, redirect, url_for, request, flash, send_file, make_response
 import google.generativeai as genai
 from sqlalchemy import func
+import PIL.Image  
+from werkzeug.utils import secure_filename 
 
 # Create Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
 # Configure Gemini API
 # REPLACE 'YOUR_API_KEY_HERE' with the actual key you copied from Google AI Studio
-os.environ["GEMINI_API_KEY"] = "AIzaSyAmlnO1QKmsDcMqwPnUn5jA7QWktWB-Rd8"
+os.environ["GEMINI_API_KEY"] = "AIzaSyAr9mi-QlXtCD11g8cOVyafzR5rpyIvlXw"
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # Initialize database
@@ -1012,6 +1014,61 @@ def symptom_checker():
     return render_template('patient/symptom_checker.html', 
                          recommendation=recommendation, 
                          symptoms_input=symptoms_input)
+
+# --- MEDICAL TRANSLATOR FEATURE ---
+
+@app.route('/patient/medical-translator', methods=['GET', 'POST'])
+@login_required
+@roles_required('patient')
+def medical_translator():
+    """
+    Simplifi-ED: AI Medical Jargon Translator
+    Uses Gemini Vision to read medical reports/prescriptions and simplify them.
+    """
+    explanation = None
+    
+    if request.method == 'POST':
+        # Check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part', 'danger')
+            return redirect(request.url)
+            
+        file = request.files['file']
+        
+        # If user does not select file
+        if file.filename == '':
+            flash('No selected file', 'warning')
+            return redirect(request.url)
+            
+        if file:
+            try:
+                # 1. Open the image directly from memory (no need to save to disk)
+                image = PIL.Image.open(file)
+                
+                # 2. Configure Gemini Vision Model
+                # Note: gemini-1.5-flash is excellent for images
+                model = genai.GenerativeModel('gemini-2.5-flash')
+                
+                # 3. Create the Prompt
+                prompt = """
+                You are a helpful medical assistant for a patient.
+                Task: Analyze this image of a medical report or prescription.
+                1. Identify the key medical terms, diagnosis, or medicines visible.
+                2. Explain what they mean in simple, 5th-grade English.
+                3. If it's a prescription, explain how/when to take the medicine if visible.
+                4. Be reassuring and clear. Avoid scary jargon.
+                5. If the image is blurry or not medical, say "I cannot read this medical document clearly."
+                """
+                
+                # 4. Generate Content (Pass both prompt and image)
+                response = model.generate_content([prompt, image])
+                explanation = response.text
+                
+            except Exception as e:
+                print(f"AI Error: {e}")
+                flash(f"Error analyzing image: {str(e)}", 'danger')
+
+    return render_template('patient/translator.html', explanation=explanation)
 
 # ========== RUN APPLICATION ==========
 

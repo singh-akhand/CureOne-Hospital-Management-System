@@ -76,7 +76,7 @@
 <h4 class="mb-3 text-muted">Quick Actions</h4>
 <div class="row">
     
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body text-center py-4">
                 <div class="mb-3 text-primary">
@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body text-center py-4">
                 <div class="mb-3 text-info">
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body text-center py-4">
                 <div class="mb-3 text-success">
@@ -111,6 +111,19 @@
                 <h5 class="card-title">My Appointments</h5>
                 <p class="card-text text-muted small">View history, download prescriptions, or cancel bookings.</p>
                 <a href="{{ url_for('patient_appointments') }}" class="btn btn-success w-100 mt-3">View Appointments</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 hover-card">
+            <div class="card-body text-center py-4">
+                <div class="mb-3" style="color: #6610f2;">
+                    <i class="fas fa-file-medical-alt fa-3x"></i>
+                </div>
+                <h5 class="card-title">Medical Translator</h5>
+                <p class="card-text text-muted small">Upload reports and let AI explain them in simple English.</p>
+                <a href="{{ url_for('medical_translator') }}" class="btn text-white w-100 mt-3" style="background-color: #6610f2;">
+                Try Simplifi-ED</a>
             </div>
         </div>
     </div>
